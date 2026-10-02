@@ -1,0 +1,77 @@
+:root {
+    --kiosk-scale: 1;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    font-size: calc(1rem * var(--kiosk-scale));
+}
+
+/* High Contrast Mode Overrides */
+body.high-contrast {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+body.high-contrast .hc-card {
+    background-color: #111111 !important;
+    border-color: #facc15 !important;
+    color: #ffffff !important;
+}
+body.high-contrast .hc-text {
+    color: #ffffff !important;
+}
+body.high-contrast .hc-btn-primary {
+    background-color: #facc15 !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+    font-weight: 800 !important;
+}
+body.high-contrast .hc-btn-secondary {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+}
+body.high-contrast .hc-accent {
+    color: #facc15 !important;
+}
+
+/* Font Scaling Utilities */
+body.scale-sm { --kiosk-scale: 0.9; }
+body.scale-lg { --kiosk-scale: 1.15; }
+body.scale-xl { --kiosk-scale: 1.3; }
+
+/* Animations */
+@keyframes printTicketAnimation {
+    0% { transform: translateY(-100%); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+.animate-print-ticket {
+    animation: printTicketAnimation 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+    50% { box-shadow: 0 0 0 22px rgba(16, 185, 129, 0); }
+}
+.pulse-kiosk-btn {
+    animation: pulseGlow 2.2s infinite;
+}
+
+/* Glassmorphism subtle background */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+/* Custom Scrollbar for touch kiosk */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #059669;
+    border-radius: 999px;
+}
