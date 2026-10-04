@@ -6,16 +6,16 @@
     <title>Med Nexus</title>
     <link rel="shortcut icon" href="assets/logo/logo.png" type="image/x-icon">
     
-    <!-- Tailwind CSS CDN -->
+    <!-- Carregamento do Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <!-- Fontes Google: Inter e JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     
-    <!-- Lucide Icons -->
+    <!-- Ícones Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/app.js"></script>
 </head>
@@ -34,22 +34,22 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- SCREEN 0: WELCOME / IDLE SCREEN -->
+        <!-- TELA 0: BOAS-VINDAS / INATIVIDADE -->
         <!-- ========================================== -->
         <section id="screen-welcome" class="flex-1 flex flex-col items-center justify-center text-center space-y-8 my-auto py-6">
             <div class="max-w-2xl">
-                <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight hc-text">
+                <h2 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight hc-text">
                     <span data-i18n="welcomeTitle1">Atendimento automatizado</span> 
                     <span class="text-health-600 hc-accent">alimentado por IA</span>
                 </h2>
             </div>
 
-            <!-- Main Touch Button -->
+            <!-- Botão principal de início -->
             <button onclick="startWizard()" class="pulse-kiosk-btn start-attendance-btn bg-health-600 hover:bg-health-700 text-white rounded-3xl text-2xl sm:text-3xl font-black shadow-2xl transition-all active:scale-95 border-4 border-emerald-300 hc-btn-primary">Começar atendimento</button>
         </section>
 
         <!-- ========================================== -->
-        <!-- STEP 1: PATIENT IDENTIFICATION -->
+        <!-- ETAPA 1: IDENTIFICAÇÃO DO PACIENTE -->
         <!-- ========================================== -->
         <section id="step-1" class="hidden space-y-6">
             <div class="text-center space-y-1">
@@ -61,30 +61,19 @@
                 </p>
             </div>
 
-            <!-- Tab Buttons: Keypad vs QR Code Scanner -->
-            <div class="flex justify-center gap-3 max-w-md mx-auto">
-                <button onclick="switchIdMethod('cpf')" id="tab-btn-cpf" class="flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-extrabold bg-health-600 text-white shadow-md transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="hash" class="w-4 h-4"></i>
-                    <span data-i18n="tabCPF">Digite o CPF</span>
-                </button>
-                <button onclick="switchIdMethod('qr')" id="tab-btn-qr" class="flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 transition-all flex items-center justify-center gap-2 hc-btn-secondary">
-                    <i data-lucide="qr-code" class="w-4 h-4 text-hospblue-600"></i>
-                    <span data-i18n="tabQR">Escanear Cartão / QR</span>
-                </button>
-            </div>
-
-            <!-- CPF KEYPAD VIEW -->
+            <!-- VISUALIZAÇÃO DO TECLADO DE CPF -->
             <div id="view-cpf-keypad" class="flex w-full max-w-lg mx-auto flex-col gap-3 items-center">
-                <!-- Left Field & Quick Demo -->
+                <!-- Campo do CPF -->
                 <div class="w-full">
                     <div class="bg-white p-5 rounded-3xl border-2 border-health-500 shadow-md space-y-3 hc-card">
                         <label class="block text-sm font-bold text-slate-700 hc-text" data-i18n="cpfLabel">Número do CPF</label>
                         <input type="text" id="kiosk-id-input" readonly placeholder="000.000.000-00" class="w-full text-center text-2xl sm:text-3xl font-black font-mono tracking-normal text-hospblue-900 bg-health-50/50 border-2 border-slate-300 rounded-2xl py-4 focus:outline-none hc-text">
                         <p class="text-sm text-slate-600 text-center hc-text" data-i18n="cpfHelp">Digite apenas os 11 números do documento.</p>
+                        <p id="cpf-lookup-status" class="hidden text-sm font-semibold text-center" role="status" aria-live="polite"></p>
                     </div>
                 </div>
 
-                <!-- Touch Keypad -->
+                <!-- Teclado numérico sensível ao toque -->
                 <div class="calculator-keypad w-full bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-lg hc-card">
                     <div class="grid grid-cols-3 gap-2.5">
                         <button onclick="pressKey('1')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">1</button>
@@ -99,44 +88,24 @@
                         <button onclick="pressKey('8')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">8</button>
                         <button onclick="pressKey('9')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">9</button>
 
-                        <button onclick="pressKey('CLEAR')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-xs py-3.5 rounded-2xl transition-all hc-btn-secondary" data-i18n="btnLimpar">Limpar</button>
+                        <button onclick="pressKey('CLEAR')" class="keypad-action-btn bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-xs py-3.5 rounded-2xl transition-all hc-btn-secondary" data-i18n="btnLimpar">Limpar</button>
                         <button onclick="pressKey('0')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">0</button>
-                        <button onclick="pressKey('BACKSPACE')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs py-3.5 rounded-2xl transition-all flex items-center justify-center hc-btn-secondary">
+                        <button onclick="pressKey('BACKSPACE')" class="keypad-action-btn bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs py-3.5 rounded-2xl transition-all flex items-center justify-center hc-btn-secondary">
                             <i data-lucide="delete" class="w-5 h-5"></i>
                         </button>
                     </div>
 
-                    <button onclick="confirmPatientIdentification()" class="w-full mt-4 bg-health-600 hover:bg-health-700 text-white font-black py-5 rounded-2xl text-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 hc-btn-primary">
+                    <button onclick="confirmPatientIdentification()" class="calculator-confirm-button w-full mt-4 bg-health-600 hover:bg-health-700 text-white font-black py-5 rounded-2xl text-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 hc-btn-primary">
                         <span data-i18n="btnConfirmID">AVANÇAR COM ESTE CPF</span>
                         <i data-lucide="arrow-right" class="w-6 h-6"></i>
                     </button>
                 </div>
 
-                <!-- Auto Demo Filler -->
-                <button onclick="autoFillDemoCPF()" class="w-full bg-hospblue-50 hover:bg-hospblue-100 text-hospblue-800 py-4 px-4 rounded-2xl text-sm font-bold border border-hospblue-200 flex items-center justify-center gap-2 transition-all active:scale-95">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-health-600"></i>
-                    <span data-i18n="demoCPF">Usar CPF de Exemplo (Simulação)</span>
-                </button>
-            </div>
-
-            <!-- SIMULATED QR SCANNER VIEW -->
-            <div id="view-qr-scanner" class="hidden bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-xl max-w-lg mx-auto text-center space-y-6 hc-card">
-                <div class="relative w-48 h-48 mx-auto border-4 border-dashed border-health-500 rounded-3xl flex items-center justify-center bg-slate-50 overflow-hidden">
-                    <div class="absolute inset-x-0 top-0 h-1 bg-health-500 animate-bounce"></div>
-                    <i data-lucide="qr-code" class="w-24 h-24 text-slate-300"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-slate-800 text-lg hc-text" data-i18n="scanPrompt">Aproxime seu Cartão SUS ou QR Code do Leitor</h3>
-                    <p class="text-xs text-slate-400 mt-1" data-i18n="scanSub">O leitor óptico fica situado logo abaixo desta tela.</p>
-                </div>
-                <button onclick="autoFillDemoCPF()" class="w-full bg-health-600 text-white font-bold py-3.5 rounded-2xl text-sm shadow-md" data-i18n="btnSimulateScan">
-                    Simular Leitura do Cartão
-                </button>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- STEP 2: SERVICE SELECTION & TRIAGE -->
+        <!-- ETAPA 2: SELEÇÃO DO SERVIÇO E TRIAGEM -->
         <!-- ========================================== -->
         <section id="step-2" class="hidden space-y-6">
             <div class="text-center space-y-1">
@@ -149,7 +118,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto pt-2">
-                <!-- Option 1: Pronto Atendimento / Urgência -->
+                <!-- Opção 1: pronto atendimento / urgência -->
                 <button onclick="openUrgencyTriageModal()" class="hc-card bg-white hover:bg-rose-50/60 border-2 border-slate-200 hover:border-rose-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-98">
                     <div class="p-4 bg-rose-100 text-rose-600 rounded-2xl group-hover:scale-105 transition-transform flex-shrink-0">
                         <i data-lucide="siren" class="w-9 h-9"></i>
@@ -160,7 +129,7 @@
                     </div>
                 </button>
 
-                <!-- Option 2: Consulta Agendada -->
+                <!-- Opção 2: consulta agendada -->
                 <button onclick="selectService('AGENDADO')" class="hc-card bg-white hover:bg-health-50 border-2 border-slate-200 hover:border-health-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-98">
                     <div class="p-4 bg-health-100 text-health-600 rounded-2xl group-hover:scale-105 transition-transform flex-shrink-0">
                         <i data-lucide="calendar-check" class="w-9 h-9"></i>
@@ -171,7 +140,7 @@
                     </div>
                 </button>
 
-                <!-- Option 3: Retirada de Exames -->
+                <!-- Opção 3: retirada de exames -->
                 <button onclick="selectService('RESULTADOS')" class="hc-card bg-white hover:bg-hospblue-50 border-2 border-slate-200 hover:border-hospblue-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-98">
                     <div class="p-4 bg-hospblue-100 text-hospblue-600 rounded-2xl group-hover:scale-105 transition-transform flex-shrink-0">
                         <i data-lucide="file-text" class="w-9 h-9"></i>
@@ -182,7 +151,7 @@
                     </div>
                 </button>
 
-                <!-- Option 4: Informações e Orientação -->
+                <!-- Opção 4: informações e orientação -->
                 <button onclick="selectService('INFORMACOES')" class="hc-card bg-white hover:bg-mint-50 border-2 border-slate-200 hover:border-mint-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-98">
                     <div class="p-4 bg-mint-100 text-mint-600 rounded-2xl group-hover:scale-105 transition-transform flex-shrink-0">
                         <i data-lucide="compass" class="w-9 h-9"></i>
@@ -195,7 +164,7 @@
             </div>
         </section>
 
-        <!-- TRIAGE MODAL FOR URGENCY LEVEL -->
+        <!-- JANELA DE TRIAGEM DO NÍVEL DE URGÊNCIA -->
         <div id="modal-urgency-triage" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border-2 border-slate-200 hc-card">
                 <div class="flex items-center justify-between border-b pb-4 border-slate-100">
@@ -214,7 +183,7 @@
                 </div>
 
                 <div class="space-y-3">
-                    <!-- Mild Symptoms -->
+                    <!-- Sintomas leves -->
                     <button onclick="selectUrgencyLevel('MILD')" class="w-full bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 p-4 rounded-2xl text-left flex items-center justify-between transition-all">
                         <div class="flex items-center gap-3">
                             <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
@@ -226,7 +195,7 @@
                         <i data-lucide="chevron-right" class="w-5 h-5 text-emerald-600"></i>
                     </button>
 
-                    <!-- Moderate Symptoms -->
+                    <!-- Sintomas moderados -->
                     <button onclick="selectUrgencyLevel('MODERATE')" class="w-full bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 p-4 rounded-2xl text-left flex items-center justify-between transition-all">
                         <div class="flex items-center gap-3">
                             <span class="w-4 h-4 rounded-full bg-amber-500"></span>
@@ -238,7 +207,7 @@
                         <i data-lucide="chevron-right" class="w-5 h-5 text-amber-600"></i>
                     </button>
 
-                    <!-- Acute Symptoms -->
+                    <!-- Sintomas agudos -->
                     <button onclick="selectUrgencyLevel('URGENT')" class="w-full bg-rose-50 hover:bg-rose-100 border-2 border-rose-300 p-4 rounded-2xl text-left flex items-center justify-between transition-all">
                         <div class="flex items-center gap-3">
                             <span class="w-4 h-4 rounded-full bg-rose-600 animate-pulse"></span>
@@ -254,7 +223,7 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- STEP 3: PATIENT CONFIRMATION & SPECIALTY -->
+        <!-- ETAPA 3: CONFIRMAÇÃO DO PACIENTE E ESPECIALIDADE -->
         <!-- ========================================== -->
         <section id="step-3" class="hidden space-y-6">
             <div class="text-center space-y-1">
@@ -265,7 +234,7 @@
             </div>
 
             <div class="max-w-4xl mx-auto space-y-6">
-                <!-- Identified Patient Info Box -->
+                <!-- Dados do paciente identificado -->
                 <div class="bg-health-50 border-2 border-health-300 rounded-3xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hc-card">
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 rounded-2xl bg-health-600 text-white flex items-center justify-center text-xl font-black shadow-md flex-shrink-0">
@@ -273,8 +242,8 @@
                         </div>
                         <div>
                             <span class="text-xs font-black text-health-700 uppercase tracking-wider block" data-i18n="foundPatient">Paciente Cadastrado</span>
-                            <h3 id="confirm-patient-name" class="text-xl font-extrabold text-slate-800 hc-text">Maria das Graças Silva</h3>
-                            <p class="text-xs text-slate-500 font-mono mt-0.5">CPF: <span id="confirm-patient-cpf">123.456.789-00</span> • Convênio: <span id="confirm-patient-insurance" class="font-bold text-hospblue-800">SUS / Unimed</span></p>
+                            <h3 id="confirm-patient-name" class="text-xl font-extrabold text-slate-800 hc-text"></h3>
+                            <p class="text-xs text-slate-500 font-mono mt-0.5">CPF: <span id="confirm-patient-cpf"></span></p>
                         </div>
                     </div>
 
@@ -283,18 +252,18 @@
                     </button>
                 </div>
 
-                <!-- Specialty Grid -->
+                <!-- Grade de especialidades -->
                 <div class="space-y-3">
                     <label class="block text-sm font-bold text-slate-700 hc-text" data-i18n="selectSpecLabel">Selecione o Setor / Especialidade Desejada:</label>
                     <div id="specialties-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
-                        <!-- Populated dynamic specialty buttons -->
+                        <!-- Botões de especialidade preenchidos dinamicamente -->
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- STEP 4: LEGAL PRIORITY SELECTION -->
+        <!-- ETAPA 4: SELEÇÃO DE PRIORIDADE LEGAL -->
         <!-- ========================================== -->
         <section id="step-4" class="hidden space-y-6">
             <div class="text-center space-y-2">
@@ -307,7 +276,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto pt-2">
-                <!-- Standard / Convencional -->
+                <!-- Atendimento padrão / convencional -->
                 <button onclick="selectPriority('CONVENCIONAL')" class="hc-card bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-slate-400 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95 col-span-1 sm:col-span-2 lg:col-span-3">
                     <div class="p-3 bg-slate-100 text-slate-600 rounded-2xl group-hover:bg-slate-200 transition-colors">
                         <i data-lucide="users" class="w-7 h-7"></i>
@@ -318,7 +287,7 @@
                     </div>
                 </button>
 
-                <!-- Elderly 60+ -->
+                <!-- Pessoa idosa com 60 anos ou mais -->
                 <button onclick="selectPriority('IDOSO')" class="hc-card bg-white hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95">
                     <div class="p-3 bg-amber-100 text-amber-700 rounded-2xl group-hover:scale-105 transition-transform">
                         <i data-lucide="heart" class="w-7 h-7"></i>
@@ -329,7 +298,7 @@
                     </div>
                 </button>
 
-                <!-- Pregnant / Nursing -->
+                <!-- Gestante / lactante -->
                 <button onclick="selectPriority('GESTANTE')" class="hc-card bg-white hover:bg-pink-50 border-2 border-slate-200 hover:border-pink-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95">
                     <div class="p-3 bg-pink-100 text-pink-700 rounded-2xl group-hover:scale-105 transition-transform">
                         <i data-lucide="baby" class="w-7 h-7"></i>
@@ -340,7 +309,7 @@
                     </div>
                 </button>
 
-                <!-- PCD -->
+                <!-- Pessoa com deficiência -->
                 <button onclick="selectPriority('PCD')" class="hc-card bg-white hover:bg-indigo-50 border-2 border-slate-200 hover:border-indigo-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95">
                     <div class="p-3 bg-indigo-100 text-indigo-700 rounded-2xl group-hover:scale-105 transition-transform">
                         <i data-lucide="accessibility" class="w-7 h-7"></i>
@@ -351,7 +320,7 @@
                     </div>
                 </button>
 
-                <!-- Autism TEA -->
+                <!-- Transtorno do espectro autista (TEA) -->
                 <button onclick="selectPriority('AUTISMO')" class="hc-card bg-white hover:bg-health-50 border-2 border-slate-200 hover:border-health-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95">
                     <div class="p-3 bg-health-100 text-health-700 rounded-2xl group-hover:scale-105 transition-transform">
                         <i data-lucide="puzzle" class="w-7 h-7"></i>
@@ -362,7 +331,7 @@
                     </div>
                 </button>
 
-                <!-- Other Priorities -->
+                <!-- Outras prioridades -->
                 <button onclick="selectPriority('OUTROS')" class="hc-card bg-white hover:bg-hospblue-50 border-2 border-slate-200 hover:border-hospblue-500 rounded-3xl p-5 shadow-sm text-left flex items-start gap-4 transition-all group active:scale-95">
                     <div class="p-3 bg-hospblue-100 text-hospblue-700 rounded-2xl group-hover:scale-105 transition-transform">
                         <i data-lucide="shield-alert" class="w-7 h-7"></i>
@@ -376,7 +345,7 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- STEP 5: TICKET GENERATED & PRINT DISPLAY -->
+        <!-- ETAPA 5: GERAÇÃO E EXIBIÇÃO DA SENHA -->
         <!-- ========================================== -->
         <section id="step-5" class="hidden space-y-6">
             <div class="text-center space-y-2">
@@ -391,10 +360,10 @@
                 </p>
             </div>
 
-            <!-- Virtual Thermal Ticket Card -->
+            <!-- Cartão virtual de comprovante térmico -->
             <div class="max-w-md mx-auto relative pt-2">
                 <div class="bg-white border-2 border-slate-300 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-center animate-print-ticket relative overflow-hidden hc-card">
-                    <!-- Top Perforated Receipt Graphic -->
+                    <!-- Representação do picote do comprovante -->
                     <div class="absolute top-0 left-0 right-0 h-3 bg-slate-100 border-b border-dashed border-slate-300"></div>
 
                     <div class="space-y-1">
@@ -415,16 +384,16 @@
                         </span>
                     </div>
 
-                    <!-- Details & Mobile QR Tracker -->
+                    <!-- Detalhes e acompanhamento por QR Code no celular -->
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center text-left border-b border-slate-100 pb-4 text-xs">
                         <div class="sm:col-span-8 space-y-1.5 text-slate-600">
-                            <div><span class="text-slate-400" data-i18n="lblPatient">Paciente:</span> <strong id="ticket-patient-name" class="text-slate-800">Maria das Graças</strong></div>
+                            <div><span class="text-slate-400" data-i18n="lblPatient">Paciente:</span> <strong id="ticket-patient-name" class="text-slate-800"></strong></div>
                             <div><span class="text-slate-400" data-i18n="lblSpec">Especialidade:</span> <span id="ticket-specialty-name" class="font-semibold text-slate-700">Clínica Geral</span></div>
                             <div><span class="text-slate-400" data-i18n="lblLoc">Local:</span> <strong id="ticket-location-name" class="text-health-700">Recepção A • Térreo</strong></div>
                             <div><span class="text-slate-400" data-i18n="lblWait">Tempo Estimado:</span> <span id="ticket-wait-time" class="font-bold text-slate-800">~ 12 min</span></div>
                         </div>
 
-                        <!-- Mobile Tracking QR Code Simulation -->
+                        <!-- Simulação do QR Code para acompanhamento no celular -->
                         <div class="sm:col-span-4 flex flex-col items-center justify-center p-2 bg-slate-50 rounded-2xl border border-slate-200">
                             <i data-lucide="qr-code" class="w-12 h-12 text-slate-800"></i>
                             <span class="text-[9px] text-slate-500 font-bold mt-1 text-center" data-i18n="mobileTrack">Acompanhar no Celular</span>
@@ -437,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- Printing Action Buttons -->
+            <!-- Botões de impressão -->
             <div class="max-w-md mx-auto text-center space-y-3 pt-2">
                 <button onclick="simulatePrintButton()" id="btn-print-action" class="w-full bg-health-600 hover:bg-health-700 text-white font-extrabold py-4 px-6 rounded-2xl text-lg shadow-lg flex items-center justify-center gap-3 transition-all active:scale-95 hc-btn-primary">
                     <i data-lucide="printer" class="w-6 h-6"></i>
@@ -495,7 +464,7 @@
         </button>
     </aside>
 
-    <!-- CALL ASSISTANT MODAL -->
+    <!-- JANELA PARA CHAMAR UM ATENDENTE -->
     <div id="modal-call-assistant" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl border-4 border-amber-400 hc-card">
             <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto animate-bounce">
