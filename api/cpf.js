@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   if (!apiKey) {
-    return res.status(500).json({ success: false, message: 'CPF_API_KEY não configurada na Vercel.' });
+    return res.status(500).json({ success: false, message: 'CPF_API_KEY não encontrada nas variáveis de ambiente da Vercel.' });
   }
 
   const cleanCpf = cpf.replace(/\D/g, '');
@@ -17,12 +17,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Garante o protocolo https:// explícito na URL
-    const response = await fetch(`https://api.cpfhub.io/v1/cpf/${cleanCpf}`, {
+    // Endpoint e cabeçalhos oficiais da CPFHub
+    const response = await fetch(`https://api.cpfhub.io/cpf/${cleanCpf}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${apiKey.trim()}`,
-        'Content-Type': 'application/json'
+        'x-api-key': apiKey.trim(),
+        'Accept': 'application/json'
       }
     });
 
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     if (!response.ok) {
       return res.status(response.status).json({
         success: false,
-        message: data.message || 'Erro ao consultar.' //a API do CPFHub
+        message: data.message || 'Erro de resposta da CPFHub.'
       });
     }
 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message || 'Falha na conexão interna com o servidor.'
+      message: error.message || 'Erro ao conectar à API da CPFHub.'
     });
   }
 }
