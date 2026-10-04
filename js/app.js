@@ -79,16 +79,13 @@ const i18nDict = {
     step3Label: "Confirmação",
     step4Label: "Prioridade",
     step1Title: "Como deseja se identificar?",
-    step1Sub: "Digite os 11 números do CPF para consultar o cadastro.",
+    step1Sub: "Digite os 11 números do CPF para simular o atendimento.",
     cpfLabel: "Número do CPF",
     cpfHelp: "Digite apenas os 11 números do documento.",
     cpfInvalid: "Digite os 11 números do CPF.",
-    cpfLoading: "Consultando CPF...",
-    cpfNotFound: "CPF não encontrado. Confira o número e tente novamente.",
-    cpfLookupError: "Não foi possível consultar o CPF. Tente novamente mais tarde.",
-    patientNameUnavailable: "Nome não informado pela consulta.",
+    cpfLoading: "Validando CPF e preparando atendimento...",
     btnLimpar: "Limpar",
-    btnConfirmID: "CONSULTAR CPF",
+    btnConfirmID: "VALIDAR CPF",
     step2Title: "Qual o motivo do seu atendimento hoje?",
     step2Sub:
       "Selecione uma das opções abaixo tocando na caixa correspondente:",
@@ -117,7 +114,8 @@ const i18nDict = {
       "Dor no peito, falta de ar intensa, sangramento ativo, queimaduras severas.",
     step3Title: "Confirme seus dados e escolha a Especialidade",
     step3Sub: "Localizamos os seguintes dados em nosso sistema:",
-    foundPatient: "Paciente Cadastrado",
+    foundPatient: "Paciente de demonstração",
+    cpfSimulationError: "Não foi possível preparar a demonstração. Tente novamente.",
     btnNotYou: "Não é você? Alterar",
     selectSpecLabel: "Selecione o Setor / Especialidade Desejada:",
     step4Title: "Você possui direito a Atendimento Prioritário?",
@@ -171,16 +169,13 @@ const i18nDict = {
     step3Label: "Confirm",
     step4Label: "Priority",
     step1Title: "How would you like to identify yourself?",
-    step1Sub: "Enter the 11 CPF digits to check the registration.",
+    step1Sub: "Enter the 11 CPF digits to simulate the service.",
     cpfLabel: "ID Number",
     cpfHelp: "Enter digits only.",
     cpfInvalid: "Enter all 11 CPF digits.",
-    cpfLoading: "Checking CPF...",
-    cpfNotFound: "CPF not found. Check the number and try again.",
-    cpfLookupError: "Could not check the CPF. Please try again later.",
-    patientNameUnavailable: "Name was not provided by the lookup.",
+    cpfLoading: "Validating CPF and preparing service...",
     btnLimpar: "Clear",
-    btnConfirmID: "CHECK CPF",
+    btnConfirmID: "VALIDATE CPF",
     step2Title: "What is the reason for your visit today?",
     step2Sub: "Select one of the options below by tapping the card:",
     serv1Title: "Urgent Care / ER",
@@ -207,7 +202,8 @@ const i18nDict = {
       "Chest pain, severe shortness of breath, active bleeding, severe burns.",
     step3Title: "Confirm details & select Specialty",
     step3Sub: "We found the following records in our system:",
-    foundPatient: "Registered Patient",
+    foundPatient: "Demo patient",
+    cpfSimulationError: "Could not prepare the demo. Please try again.",
     btnNotYou: "Not you? Change",
     selectSpecLabel: "Select desired Department / Specialty:",
     step4Title: "Do you have Priority Access rights?",
@@ -260,16 +256,13 @@ const i18nDict = {
     step3Label: "Confirmar",
     step4Label: "Prioridad",
     step1Title: "¿Cómo desea identificarse?",
-    step1Sub: "Ingrese los 11 dígitos del CPF para consultar el registro.",
+    step1Sub: "Ingrese los 11 dígitos del CPF para simular la atención.",
     cpfLabel: "Número de Documento",
     cpfHelp: "Ingrese solo números.",
     cpfInvalid: "Ingrese los 11 dígitos del CPF.",
-    cpfLoading: "Consultando CPF...",
-    cpfNotFound: "CPF no encontrado. Verifique el número e inténtelo de nuevo.",
-    cpfLookupError: "No fue posible consultar el CPF. Inténtelo de nuevo más tarde.",
-    patientNameUnavailable: "La consulta no proporcionó el nombre.",
+    cpfLoading: "Validando CPF y preparando la atención...",
     btnLimpar: "Limpiar",
-    btnConfirmID: "CONSULTAR CPF",
+    btnConfirmID: "VALIDAR CPF",
     step2Title: "¿Cuál es el motivo de su visita hoy?",
     step2Sub: "Seleccione una de las siguientes opciones tocando la casilla:",
     serv1Title: "Urgencias / Emergencia",
@@ -296,7 +289,8 @@ const i18nDict = {
       "Dolor de pecho, dificultad respiratoria severa, sangrado activo.",
     step3Title: "Confirme datos y elija la Especialidad",
     step3Sub: "Encontramos los siguientes registros en nuestro sistema:",
-    foundPatient: "Paciente Registrado",
+    foundPatient: "Paciente de demostración",
+    cpfSimulationError: "No se pudo preparar la demostración. Inténtelo de nuevo.",
     btnNotYou: "¿No es usted? Cambiar",
     selectSpecLabel: "Seleccione el Sector / Especialidad Deseada:",
     step4Title: "¿Tiene derecho a Atención Prioritaria?",
@@ -468,6 +462,40 @@ function formatCpf(cpf) {
   return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
 }
 
+function validarCpf(cpf) {
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+  const calcularDigito = (base) => {
+    const soma = [...base].reduce(
+      (total, digito, indice) => total + Number(digito) * (base.length + 1 - indice),
+      0,
+    );
+    const resto = (soma * 10) % 11;
+    return resto === 10 ? 0 : resto;
+  };
+
+  return (
+    calcularDigito(cpf.slice(0, 9)) === Number(cpf[9]) &&
+    calcularDigito(cpf.slice(0, 10)) === Number(cpf[10])
+  );
+}
+
+function gerarNomeAleatorio() {
+  const nomes = [
+    "Ana Clara Martins",
+    "Beatriz Almeida Costa",
+    "Camila Rodrigues Lima",
+    "Daniel Ferreira Santos",
+    "Eduardo Carvalho Souza",
+    "Gabriela Oliveira Rocha",
+    "João Pedro Ribeiro",
+    "Larissa Mendes Alves",
+    "Marcos Vinícius Barros",
+    "Rafael Gomes Nascimento",
+  ];
+  return nomes[Math.floor(Math.random() * nomes.length)];
+}
+
 function setCpfLookupStatus(message, isError = false) {
   const status = document.getElementById("cpf-lookup-status");
   if (!status) return;
@@ -479,7 +507,7 @@ function setCpfLookupStatus(message, isError = false) {
 }
 
 async function confirmPatientIdentification() {
-  if (!/^\d{11}$/.test(state.rawCpf)) {
+  if (!validarCpf(state.rawCpf)) {
     setCpfLookupStatus(i18nDict[state.currentLang].cpfInvalid, true);
     playAudioTone(350, 0.12);
     return;
@@ -498,11 +526,10 @@ async function confirmPatientIdentification() {
   lucide.createIcons();
 
   try {
-    const patient = await buscarDadosCPF(cpfDigitado);
+    await new Promise((resolve) => setTimeout(resolve, 700));
     if (state.currentStep !== 1 || state.rawCpf !== cpfDigitado) return;
 
-    const patientName = typeof patient.name === "string" ? patient.name.trim() : "";
-    state.patientData.name = patientName || i18nDict[state.currentLang].patientNameUnavailable;
+    state.patientData.name = gerarNomeAleatorio();
     state.patientData.cpf = formatCpf(cpfDigitado);
 
     document.getElementById("confirm-patient-name").innerText = state.patientData.name;
@@ -510,13 +537,8 @@ async function confirmPatientIdentification() {
     setCpfLookupStatus("");
     goToStep(2);
     speakText(i18nDict[state.currentLang].step2Title);
-  } catch (error) {
-    const message = error.code === "invalid"
-      ? i18nDict[state.currentLang].cpfInvalid
-      : error.code === "not-found"
-        ? i18nDict[state.currentLang].cpfNotFound
-        : i18nDict[state.currentLang].cpfLookupError;
-    setCpfLookupStatus(message, true);
+  } catch {
+    setCpfLookupStatus(i18nDict[state.currentLang].cpfSimulationError, true);
     playAudioTone(350, 0.12);
   } finally {
     keypadButtons.forEach((button) => {
@@ -759,48 +781,4 @@ function playAudioTone(freq, duration) {
   } catch (e) {
     // Trata restrições de reprodução automática de áudio do navegador
   }
-}
-// Consulta à API
-async function buscarDadosCPF(cpfDigitado) {
-  let response;
-  let payload;
-
-  try {
-    response = await fetch(`/api/cpf?cpf=${encodeURIComponent(cpfDigitado)}`, {
-      headers: { Accept: "application/json" },
-    });
-    payload = await response.json();
-  } catch {
-    const error = new Error("Falha na comunicação com o serviço de CPF");
-    error.code = "request";
-    throw error;
-  }
-
-  if (response.status === 400) {
-    const error = new Error("CPF inválido");
-    error.code = "invalid";
-    throw error;
-  }
-  if (response.status === 404 && payload?.success === false) {
-    const error = new Error("CPF não encontrado");
-    error.code = "not-found";
-    throw error;
-  }
-  if (!response.ok) {
-    const error = new Error("Resposta inesperada do serviço de CPF");
-    error.code = "request";
-    throw error;
-  }
-  if (payload?.success === false) {
-    const error = new Error("CPF não encontrado");
-    error.code = "not-found";
-    throw error;
-  }
-  if (payload?.success !== true || !payload.data || typeof payload.data !== "object") {
-    const error = new Error("Resposta inesperada do serviço de CPF");
-    error.code = "request";
-    throw error;
-  }
-
-  return payload.data;
 }
