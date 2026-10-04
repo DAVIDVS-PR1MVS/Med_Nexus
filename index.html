@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Totem de Autoatendimento - Hospital CareSys</title>
+    <title>Med Nexus</title>
+    <link rel="shortcut icon" href="assets/logo/logo.png" type="image/x-icon">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,163 +21,32 @@
 </head>
 <body id="kiosk-body" class="h-full bg-slate-100 text-slate-800 flex flex-col justify-between overflow-hidden relative">
 
-    <header class="bg-hospblue-900 text-white shadow-xl border-b-4 border-health-500 z-30 flex-shrink-0">
-        
-        <!-- Top Accessibility & Language Toolbar -->
-        <div class="bg-black/30 px-6 py-2 border-b border-white/10 flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-                <span class="font-semibold text-emerald-300 flex items-center gap-1">
-                    <i data-lucide="accessibility" class="w-4 h-4"></i>
-                    <span data-i18n="accessibilityBar">Recursos de Acessibilidade:</span>
-                </span>
-            </div>
+    <main id="kiosk-main" class="flex-1 relative flex flex-col justify-center p-4 sm:p-8 max-w-6xl mx-auto w-full min-h-0 overflow-y-auto">
 
-            <!-- Accessibility Controls -->
-            <div class="flex items-center gap-3">
-                <!-- Text Scale controls -->
-                <div class="flex items-center bg-white/10 rounded-lg p-1 gap-1">
-                    <button onclick="changeFontSize('minus')" class="px-2 py-1 rounded bg-white/20 hover:bg-white/30 font-bold transition-all" title="Diminuir Fonte">A-</button>
-                    <button onclick="changeFontSize('reset')" class="px-2 py-1 rounded bg-white/20 hover:bg-white/30 font-semibold transition-all" title="Fonte Normal">A</button>
-                    <button onclick="changeFontSize('plus')" class="px-2 py-1 rounded bg-white/20 hover:bg-white/30 font-bold transition-all" title="Aumentar Fonte">A+</button>
-                </div>
-
-                <!-- Contrast Toggle -->
-                <button onclick="toggleHighContrast()" id="btn-contrast" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 font-bold flex items-center gap-1.5 transition-all">
-                    <i data-lucide="eye" class="w-3.5 h-3.5 text-amber-300"></i>
-                    <span data-i18n="contrast">Contraste</span>
-                </button>
-
-                <!-- Audio Reader / Voice Toggle -->
-                <button onclick="toggleVoiceAssistant()" id="btn-voice-toggle" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 font-bold flex items-center gap-1.5 transition-all">
-                    <i data-lucide="volume-2" id="icon-voice" class="w-3.5 h-3.5 text-emerald-300"></i>
-                    <span id="text-voice-state" data-i18n="voiceOff">Voz: OFF</span>
-                </button>
-
-                <!-- Language Selector Buttons -->
-                <div class="flex items-center bg-white/10 rounded-lg p-1 gap-1">
-                    <button onclick="setLanguage('pt')" id="lang-pt" class="px-2 py-0.5 rounded font-extrabold bg-health-500 text-white transition-all">PT</button>
-                    <button onclick="setLanguage('en')" id="lang-en" class="px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all text-slate-200">EN</button>
-                    <button onclick="setLanguage('es')" id="lang-es" class="px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all text-slate-200">ES</button>
-                </div>
-            </div>
+        <div id="wizard-stepper" class="wizard-stepper hidden" aria-label="Etapas do atendimento">
+            <div id="step-node-1" class="stepper-stop stepper-stop-1"><span class="stepper-dot"></span><span class="stepper-label" data-i18n="step1Label">Identificação</span></div>
+            <div id="step-connector-1" class="stepper-connector stepper-connector-1"></div>
+            <div id="step-node-2" class="stepper-stop stepper-stop-2"><span class="stepper-dot"></span><span class="stepper-label" data-i18n="step2Label">Serviço</span></div>
+            <div id="step-connector-2" class="stepper-connector stepper-connector-2"></div>
+            <div id="step-node-3" class="stepper-stop stepper-stop-3"><span class="stepper-dot"></span><span class="stepper-label" data-i18n="step3Label">Confirmação</span></div>
+            <div id="step-connector-3" class="stepper-connector stepper-connector-3"></div>
+            <div id="step-node-4" class="stepper-stop stepper-stop-4"><span class="stepper-dot"></span><span class="stepper-label" data-i18n="step4Label">Prioridade</span></div>
         </div>
-
-        <!-- Main Header Branding Bar -->
-        <div class="px-6 py-4 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <div class="flex items-center gap-4">
-                <img src="assets/logo/logo.png" alt="Logotipo do Hospital CareSys" class="w-14 h-14 object-contain flex-shrink-0">
-                <div>
-                    <h1 class="text-2xl font-black tracking-tight leading-none text-white hc-text">Med Nexus</h1>
-                    <p class="text-xs font-semibold text-emerald-200 tracking-widest uppercase mt-1 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        <span data-i18n="kioskLocation">Unidade Central • Totem de Autoatendimento</span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Clock & Global Actions -->
-            <div class="flex items-center gap-5">
-                <div class="text-right hidden sm:block border-r border-white/20 pr-5">
-                    <div id="kiosk-clock" class="text-2xl font-black font-mono tracking-wider text-emerald-300 hc-accent">14:30</div>
-                    <div id="kiosk-date" class="text-xs text-slate-300 font-medium">Terça-feira, 29 Setembro</div>
-                </div>
-
-                <!-- Global Reset / Home Button (Shown inside wizard steps) -->
-                <button onclick="resetToWelcomeScreen()" id="btn-global-home" class="hidden bg-rose-600 hover:bg-rose-700 text-white px-5 py-3 rounded-2xl text-sm font-black shadow-lg flex items-center gap-2 transition-all active:scale-95 border border-rose-400 hc-btn-secondary">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span data-i18n="btnHome">Início</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-1 relative flex flex-col justify-center p-4 sm:p-8 max-w-6xl mx-auto w-full min-h-0 overflow-y-auto">
 
         <!-- ========================================== -->
         <!-- SCREEN 0: WELCOME / IDLE SCREEN -->
         <!-- ========================================== -->
         <section id="screen-welcome" class="flex-1 flex flex-col items-center justify-center text-center space-y-8 my-auto py-6">
-            <div class="space-y-4 max-w-2xl">
-                <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-extrabold bg-health-100 text-hospblue-900 border border-health-300 shadow-sm hc-card">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-health-600"></i>
-                    <span data-i18n="welcomeTag">Atendimento Digital Rápido & Seguro</span>
-                </span>
-                
+            <div class="max-w-2xl">
                 <h2 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight hc-text">
-                    <span data-i18n="welcomeTitle1">Retire sua Senha ou Faça seu</span> 
-                    <span class="text-health-600 hc-accent">Check-in</span>
+                    <span data-i18n="welcomeTitle1">Atendimento automatizado</span> 
+                    <span class="text-health-600 hc-accent">alimentado por IA</span>
                 </h2>
-                
-                <p class="text-slate-600 text-lg font-medium max-w-xl mx-auto leading-relaxed hc-text" data-i18n="welcomeDesc">
-                    Agilize seu atendimento no hospital com poucos toques na tela.
-                </p>
             </div>
 
             <!-- Main Touch Button -->
-            <div class="py-4">
-                <button onclick="startWizard()" class="pulse-kiosk-btn bg-health-600 hover:bg-health-700 text-white px-12 py-9 rounded-3xl text-2xl sm:text-3xl font-black shadow-2xl flex items-center justify-center gap-4 transition-all active:scale-95 border-4 border-emerald-300 hc-btn-primary">
-                    <i data-lucide="touch-pointer" class="w-10 h-10 animate-bounce"></i>
-                    <span data-i18n="touchToStart">TOCAR PARA INICIAR</span>
-                </button>
-            </div>
-
-            <!-- Health Status Banner -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl pt-6 border-t border-slate-200/80 hc-card">
-                <div class="flex items-center justify-center gap-3 text-slate-700 font-bold text-sm p-3.5 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <div class="p-2 bg-health-100 text-health-700 rounded-xl">
-                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                    </div>
-                    <span data-i18n="feature1">Ambiente Seguro</span>
-                </div>
-
-                <div class="flex items-center justify-center gap-3 text-slate-700 font-bold text-sm p-3.5 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <div class="p-2 bg-hospblue-100 text-hospblue-700 rounded-xl">
-                        <i data-lucide="heart-handshake" class="w-5 h-5"></i>
-                    </div>
-                    <span data-i18n="feature2">Prioridade Legal</span>
-                </div>
-
-                <div class="flex items-center justify-center gap-3 text-slate-700 font-bold text-sm p-3.5 bg-white rounded-2xl shadow-sm border border-slate-200">
-                    <div class="p-2 bg-mint-100 text-mint-600 rounded-xl">
-                        <i data-lucide="zap" class="w-5 h-5"></i>
-                    </div>
-                    <span data-i18n="feature3">Fila Inteligente</span>
-                </div>
-            </div>
+            <button onclick="startWizard()" class="pulse-kiosk-btn start-attendance-btn bg-health-600 hover:bg-health-700 text-white rounded-3xl text-2xl sm:text-3xl font-black shadow-2xl transition-all active:scale-95 border-4 border-emerald-300 hc-btn-primary">Começar atendimento</button>
         </section>
-
-        <!-- WIZARD STEPPER BAR (Steps 1 to 4) -->
-        <div id="wizard-stepper" class="hidden mb-6">
-            <div class="flex items-center justify-between max-w-3xl mx-auto relative px-4">
-                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-1.5 bg-slate-200 rounded-full z-0"></div>
-                <div id="stepper-progress-bar" class="absolute left-8 top-1/2 -translate-y-1/2 h-1.5 bg-health-600 rounded-full z-0 transition-all duration-300" style="width: 0%;"></div>
-
-                <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center">
-                    <div id="step-node-1" class="w-12 h-12 rounded-2xl bg-health-600 text-white font-black text-lg flex items-center justify-center shadow-lg transition-all">1</div>
-                    <span class="text-xs font-black mt-2 text-slate-700 hc-text hidden sm:block" data-i18n="step1Label">Identificação</span>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center">
-                    <div id="step-node-2" class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-600 font-black text-lg flex items-center justify-center transition-all">2</div>
-                    <span class="text-xs font-bold mt-2 text-slate-400 hc-text hidden sm:block" data-i18n="step2Label">Serviço</span>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center">
-                    <div id="step-node-3" class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-600 font-black text-lg flex items-center justify-center transition-all">3</div>
-                    <span class="text-xs font-bold mt-2 text-slate-400 hc-text hidden sm:block" data-i18n="step3Label">Confirmação</span>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="relative z-10 flex flex-col items-center">
-                    <div id="step-node-4" class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-600 font-black text-lg flex items-center justify-center transition-all">4</div>
-                    <span class="text-xs font-bold mt-2 text-slate-400 hc-text hidden sm:block" data-i18n="step4Label">Prioridade</span>
-                </div>
-            </div>
-        </div>
 
         <!-- ========================================== -->
         <!-- STEP 1: PATIENT IDENTIFICATION -->
@@ -204,49 +74,49 @@
             </div>
 
             <!-- CPF KEYPAD VIEW -->
-            <div id="view-cpf-keypad" class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-4xl mx-auto items-center">
+            <div id="view-cpf-keypad" class="flex w-full max-w-lg mx-auto flex-col gap-3 items-center">
                 <!-- Left Field & Quick Demo -->
-                <div class="lg:col-span-5 space-y-4">
-                    <div class="bg-white p-6 rounded-3xl border-2 border-health-500 shadow-md space-y-3 hc-card">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400" data-i18n="cpfLabel">Número do CPF</label>
-                        <input type="text" id="kiosk-id-input" readonly placeholder="000.000.000-00" class="w-full text-center text-2xl sm:text-3xl font-black font-mono tracking-widest text-hospblue-900 bg-health-50/50 border-2 border-slate-200 rounded-2xl py-4 focus:outline-none hc-text">
-                        <p class="text-xs text-slate-400 text-center" data-i18n="cpfHelp">Digite apenas os 11 números do documento.</p>
+                <div class="w-full">
+                    <div class="bg-white p-5 rounded-3xl border-2 border-health-500 shadow-md space-y-3 hc-card">
+                        <label class="block text-sm font-bold text-slate-700 hc-text" data-i18n="cpfLabel">Número do CPF</label>
+                        <input type="text" id="kiosk-id-input" readonly placeholder="000.000.000-00" class="w-full text-center text-2xl sm:text-3xl font-black font-mono tracking-normal text-hospblue-900 bg-health-50/50 border-2 border-slate-300 rounded-2xl py-4 focus:outline-none hc-text">
+                        <p class="text-sm text-slate-600 text-center hc-text" data-i18n="cpfHelp">Digite apenas os 11 números do documento.</p>
                     </div>
-
-                    <!-- Auto Demo Filler -->
-                    <button onclick="autoFillDemoCPF()" class="w-full bg-hospblue-50 hover:bg-hospblue-100 text-hospblue-800 py-3 px-4 rounded-2xl text-xs font-bold border border-hospblue-200 flex items-center justify-center gap-2 transition-all active:scale-95">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-health-600"></i>
-                        <span data-i18n="demoCPF">Usar CPF de Exemplo (Simulação)</span>
-                    </button>
                 </div>
 
                 <!-- Touch Keypad -->
-                <div class="lg:col-span-7 bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-lg hc-card">
+                <div class="calculator-keypad w-full bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-lg hc-card">
                     <div class="grid grid-cols-3 gap-2.5">
-                        <button onclick="pressKey('1')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">1</button>
-                        <button onclick="pressKey('2')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">2</button>
-                        <button onclick="pressKey('3')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">3</button>
+                        <button onclick="pressKey('1')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">1</button>
+                        <button onclick="pressKey('2')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">2</button>
+                        <button onclick="pressKey('3')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">3</button>
 
-                        <button onclick="pressKey('4')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">4</button>
-                        <button onclick="pressKey('5')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">5</button>
-                        <button onclick="pressKey('6')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">6</button>
+                        <button onclick="pressKey('4')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">4</button>
+                        <button onclick="pressKey('5')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">5</button>
+                        <button onclick="pressKey('6')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">6</button>
 
-                        <button onclick="pressKey('7')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">7</button>
-                        <button onclick="pressKey('8')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">8</button>
-                        <button onclick="pressKey('9')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">9</button>
+                        <button onclick="pressKey('7')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">7</button>
+                        <button onclick="pressKey('8')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">8</button>
+                        <button onclick="pressKey('9')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">9</button>
 
-                        <button onclick="pressKey('CLEAR')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-xs py-3.5 rounded-2xl transition-all" data-i18n="btnLimpar">Limpar</button>
-                        <button onclick="pressKey('0')" class="keypad-btn bg-slate-100 hover:bg-health-100 active:bg-health-600 active:text-white text-slate-800 font-black text-2xl py-3.5 rounded-2xl transition-all hc-btn-secondary">0</button>
-                        <button onclick="pressKey('BACKSPACE')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs py-3.5 rounded-2xl transition-all flex items-center justify-center">
+                        <button onclick="pressKey('CLEAR')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold text-xs py-3.5 rounded-2xl transition-all hc-btn-secondary" data-i18n="btnLimpar">Limpar</button>
+                        <button onclick="pressKey('0')" class="keypad-btn bg-health-50 hover:bg-health-100 active:bg-health-600 active:text-white border border-health-200 text-slate-800 font-black text-2xl py-3 rounded-2xl transition-all hc-btn-secondary">0</button>
+                        <button onclick="pressKey('BACKSPACE')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs py-3.5 rounded-2xl transition-all flex items-center justify-center hc-btn-secondary">
                             <i data-lucide="delete" class="w-5 h-5"></i>
                         </button>
                     </div>
 
-                    <button onclick="confirmPatientIdentification()" class="w-full mt-4 bg-health-600 hover:bg-health-700 text-white font-black py-4 rounded-2xl text-lg shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 hc-btn-primary">
+                    <button onclick="confirmPatientIdentification()" class="w-full mt-4 bg-health-600 hover:bg-health-700 text-white font-black py-5 rounded-2xl text-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 hc-btn-primary">
                         <span data-i18n="btnConfirmID">AVANÇAR COM ESTE CPF</span>
                         <i data-lucide="arrow-right" class="w-6 h-6"></i>
                     </button>
                 </div>
+
+                <!-- Auto Demo Filler -->
+                <button onclick="autoFillDemoCPF()" class="w-full bg-hospblue-50 hover:bg-hospblue-100 text-hospblue-800 py-4 px-4 rounded-2xl text-sm font-bold border border-hospblue-200 flex items-center justify-center gap-2 transition-all active:scale-95">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-health-600"></i>
+                    <span data-i18n="demoCPF">Usar CPF de Exemplo (Simulação)</span>
+                </button>
             </div>
 
             <!-- SIMULATED QR SCANNER VIEW -->
@@ -583,93 +453,47 @@
 
     </main>
 
-    <!-- FOOTER STATUS & HELPER BAR -->
-    <footer class="bg-white border-t border-slate-200 px-6 py-3.5 z-20 shadow-md hc-card flex-shrink-0">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-            
-            <!-- Live Queue Status Pill -->
-            <div class="flex items-center gap-3 text-xs">
-                <span class="px-3 py-1 rounded-full bg-health-100 text-health-800 font-bold flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-health-500 animate-pulse"></span>
-                    <span data-i18n="statusReception">Recepção: Fluxo Normal</span>
-                </span>
-                <span class="text-slate-400 hidden md:inline">•</span>
-                <span class="text-slate-500 hidden md:inline" data-i18n="ticketsCalled">Senhas chamadas agora: <strong class="text-slate-800 font-bold">N-039, P-014</strong></span>
+    <aside id="utility-widget" class="fixed bottom-4 left-4 z-40">
+        <div id="utility-panel" class="hidden absolute bottom-14 left-0 w-72 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-xl hc-card">
+            <div class="mb-3 flex items-center justify-between">
+                <h2 class="text-sm font-black text-slate-800 hc-text" data-i18n="utilityTitle">Opções do atendimento</h2>
+                <button type="button" onclick="toggleUtilityPanel()" aria-label="Fechar opções" class="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
 
-            <!-- Helper Action Buttons -->
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <!-- Sector Map Modal Trigger -->
-                <button onclick="openSectorMapModal()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-hospblue-50 hover:bg-hospblue-100 text-hospblue-800 text-xs font-bold border border-hospblue-200 flex items-center justify-center gap-2 transition-all">
-                    <i data-lucide="map" class="w-4 h-4 text-hospblue-600"></i>
-                    <span data-i18n="btnMap">Mapa de Setores</span>
-                </button>
+            <div class="space-y-1 border-b border-slate-200 pb-3 text-xs">
+                <div class="font-bold text-health-800" data-i18n="statusReception">Recepção: Fluxo Normal</div>
+                <div class="text-slate-500" data-i18n="ticketsCalled">Senhas chamadas agora: N-039, P-014</div>
+            </div>
 
-                <!-- Call Assistant Emergency Button -->
-                <button onclick="callHumanAssistant()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95">
-                    <i data-lucide="bell" class="w-4 h-4"></i>
-                    <span data-i18n="btnCallHelp">Chamar Atendente</span>
+            <div class="mt-3 space-y-2">
+                <button onclick="callHumanAssistant()" class="w-full rounded-xl bg-amber-500 px-3 py-2.5 text-left text-xs font-extrabold text-white hover:bg-amber-600 flex items-center gap-2">
+                    <i data-lucide="bell" class="w-4 h-4"></i><span data-i18n="btnCallHelp">Chamar Atendente</span>
                 </button>
+                <button onclick="resetToWelcomeScreen()" id="btn-global-home" class="hidden w-full rounded-xl bg-rose-600 px-3 py-2.5 text-left text-xs font-extrabold text-white hover:bg-rose-700 flex items-center gap-2">
+                    <i data-lucide="home" class="w-4 h-4"></i><span data-i18n="btnHome">Início</span>
+                </button>
+                <button onclick="goToPreviousStep()" id="btn-wizard-back" class="hidden w-full rounded-xl bg-slate-200 px-3 py-2.5 text-left text-xs font-extrabold text-slate-800 hover:bg-slate-300 flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i><span data-i18n="btnBack">Voltar</span>
+                </button>
+            </div>
 
-                <!-- Wizard Navigation Back Button (Shown inside wizard) -->
-                <button onclick="goToPreviousStep()" id="btn-wizard-back" class="hidden px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                    <span data-i18n="btnBack">Voltar</span>
-                </button>
+            <div class="mt-4 border-t border-slate-200 pt-3">
+                <h3 class="mb-2 text-xs font-black uppercase text-slate-500" data-i18n="accessibilityBar">Acessibilidade e idioma</h3>
+                <div class="flex gap-2">
+                    <button onclick="toggleHighContrast()" id="btn-contrast" class="flex-1 rounded-lg border border-slate-200 px-2 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1"><i data-lucide="eye" class="w-4 h-4"></i><span data-i18n="contrast">Contraste</span></button>
+                    <button onclick="toggleVoiceAssistant()" id="btn-voice-toggle" class="flex-1 rounded-lg border border-slate-200 px-2 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center justify-center gap-1"><i data-lucide="volume-2" id="icon-voice" class="w-4 h-4"></i><span id="text-voice-state" data-i18n="voiceOff">Voz: OFF</span></button>
+                </div>
+                <div class="mt-2 grid grid-cols-3 gap-2">
+                    <button onclick="setLanguage('pt')" id="lang-pt" class="rounded-lg bg-health-600 px-2 py-1.5 text-xs font-extrabold text-white">PT</button>
+                    <button onclick="setLanguage('en')" id="lang-en" class="rounded-lg bg-slate-100 px-2 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">EN</button>
+                    <button onclick="setLanguage('es')" id="lang-es" class="rounded-lg bg-slate-100 px-2 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200">ES</button>
+                </div>
             </div>
         </div>
-    </footer>
-
-    <!-- SECTOR MAP MODAL -->
-    <div id="modal-sector-map" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border-2 border-slate-200 hc-card">
-            <div class="flex items-center justify-between border-b pb-4 border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="p-3 bg-hospblue-100 text-hospblue-600 rounded-2xl">
-                        <i data-lucide="map-pin" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-800 hc-text" data-i18n="mapTitle">Guia e Mapa dos Setores Hospitalares</h3>
-                        <p class="text-xs text-slate-400" data-i18n="mapSub">Localização das recepções, blocos de exames e consultórios</p>
-                    </div>
-                </div>
-                <button onclick="closeSectorMapModal()" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-
-            <!-- Simulated Floor Plan -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <span class="px-2.5 py-1 rounded-md bg-health-600 text-white font-extrabold text-[10px] uppercase">Térreo</span>
-                    <h4 class="font-bold text-slate-800 text-sm">Pronto Atendimento & Triagem</h4>
-                    <p class="text-xs text-slate-500">Recepção A, Salas de Medicação, Raio-X e Emergência Geral.</p>
-                </div>
-
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <span class="px-2.5 py-1 rounded-md bg-hospblue-600 text-white font-extrabold text-[10px] uppercase">1º Andar</span>
-                    <h4 class="font-bold text-slate-800 text-sm">Consultórios & Exames Laboratoriais</h4>
-                    <p class="text-xs text-slate-500">Recepção B, Especialidades Médicas, Ultrassom e Coleta de Sangue.</p>
-                </div>
-
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <span class="px-2.5 py-1 rounded-md bg-mint-600 text-white font-extrabold text-[10px] uppercase">2º Andar</span>
-                    <h4 class="font-bold text-slate-800 text-sm">Internação & Maternidade</h4>
-                    <p class="text-xs text-slate-500">Posto de Enfermagem, Leitos 201 a 240, UTI e Centro Cirúrgico.</p>
-                </div>
-
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                    <span class="px-2.5 py-1 rounded-md bg-amber-600 text-white font-extrabold text-[10px] uppercase">Anexo B</span>
-                    <h4 class="font-bold text-slate-800 text-sm">Administração & Ouvidoria</h4>
-                    <p class="text-xs text-slate-500">Autorização de Guias, Faturamento de Convênios e DHO.</p>
-                </div>
-            </div>
-
-            <button onclick="closeSectorMapModal()" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-2xl text-sm">
-                Fechar Mapa
-            </button>
-        </div>
-    </div>
+        <button id="utility-toggle" type="button" onclick="toggleUtilityPanel()" aria-expanded="false" aria-controls="utility-panel" aria-label="Abrir opções do atendimento" title="Opções do atendimento" class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl hover:bg-slate-700">
+            <i data-lucide="ellipsis" class="w-6 h-6"></i>
+        </button>
+    </aside>
 
     <!-- CALL ASSISTANT MODAL -->
     <div id="modal-call-assistant" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">

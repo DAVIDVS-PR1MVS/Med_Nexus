@@ -59,8 +59,6 @@
             // Accessibility Flags
             isHighContrast: false,
             voiceEnabled: false,
-            fontScaleState: 1, // 0 = sm, 1 = normal, 2 = lg, 3 = xl
-
             // Timers
             finishTimer: null,
             finishCountdownSeconds: 15
@@ -70,18 +68,13 @@
         const i18nDict = {
             pt: {
                 accessibilityBar: "Recursos de Acessibilidade:",
+                utilityTitle: "Opções do atendimento",
+                flowTitle: "Etapas do atendimento",
                 contrast: "Contraste",
                 voiceOff: "Voz: OFF",
                 voiceOn: "Voz: ON",
-                kioskLocation: "Unidade Central • Totem de Autoatendimento",
                 btnHome: "Início",
-                welcomeTag: "Atendimento Digital Rápido & Seguro",
                 welcomeTitle1: "Retire sua Senha ou Faça seu",
-                welcomeDesc: "Agilize seu atendimento no hospital com poucos toques na tela.",
-                touchToStart: "TOCAR PARA INICIAR",
-                feature1: "Ambiente Seguro",
-                feature2: "Prioridade Legal",
-                feature3: "Fila Inteligente",
                 step1Label: "Identificação",
                 step2Label: "Serviço",
                 step3Label: "Confirmação",
@@ -150,28 +143,20 @@
                 seconds: "segundos...",
                 statusReception: "Recepção: Fluxo Normal",
                 ticketsCalled: "Senhas chamadas agora:",
-                btnMap: "Mapa de Setores",
                 btnCallHelp: "Chamar Atendente",
                 btnBack: "Voltar",
-                mapTitle: "Guia e Mapa dos Setores Hospitalares",
-                mapSub: "Localização das recepções, blocos de exames e consultórios",
                 assistantCalledTitle: "Atendente Solicitado!",
                 assistantCalledDesc: "Um profissional da recepção foi notificado e já está a caminho deste totem (#03) para lhe auxiliar."
             },
             en: {
                 accessibilityBar: "Accessibility Tools:",
+                utilityTitle: "Service options",
+                flowTitle: "Service steps",
                 contrast: "Contrast",
                 voiceOff: "Voice: OFF",
                 voiceOn: "Voice: ON",
-                kioskLocation: "Main Unit • Self-Service Kiosk",
                 btnHome: "Home",
-                welcomeTag: "Fast & Safe Digital Check-In",
                 welcomeTitle1: "Get Your Ticket or Complete",
-                welcomeDesc: "Speed up your hospital service with just a few touches on screen.",
-                touchToStart: "TOUCH TO START",
-                feature1: "Safe Environment",
-                feature2: "Legal Priority",
-                feature3: "Smart Queue",
                 step1Label: "ID",
                 step2Label: "Service",
                 step3Label: "Confirm",
@@ -240,28 +225,20 @@
                 seconds: "seconds...",
                 statusReception: "Reception: Normal Flow",
                 ticketsCalled: "Now calling:",
-                btnMap: "Sector Map",
                 btnCallHelp: "Call Assistant",
                 btnBack: "Back",
-                mapTitle: "Hospital Sector Guide & Map",
-                mapSub: "Locations of receptions, lab blocks, and consultation rooms",
                 assistantCalledTitle: "Staff Notified!",
                 assistantCalledDesc: "A reception staff member has been notified and is coming to kiosk #03 to help you."
             },
             es: {
                 accessibilityBar: "Herramientas de Accesibilidad:",
+                utilityTitle: "Opciones de atención",
+                flowTitle: "Etapas de atención",
                 contrast: "Contraste",
                 voiceOff: "Voz: DES",
                 voiceOn: "Voz: ACT",
-                kioskLocation: "Unidad Central • Totem de Autoatención",
                 btnHome: "Inicio",
-                welcomeTag: "Atención Digital Rápida y Segura",
                 welcomeTitle1: "Obtenga su Turno o Haga su",
-                welcomeDesc: "Agilice su atención en el hospital con pocos toques en la pantalla.",
-                touchToStart: "TOCAR PARA INICIAR",
-                feature1: "Entorno Seguro",
-                feature2: "Prioridad Legal",
-                feature3: "Fila Inteligente",
                 step1Label: "Identificación",
                 step2Label: "Servicio",
                 step3Label: "Confirmar",
@@ -330,11 +307,8 @@
                 seconds: "segundos...",
                 statusReception: "Recepción: Flujo Normal",
                 ticketsCalled: "Llamando ahora:",
-                btnMap: "Mapa de Sectores",
                 btnCallHelp: "Llamar Asistente",
                 btnBack: "Volver",
-                mapTitle: "Guía y Mapa de Sectores Hospitalarios",
-                mapSub: "Ubicación de recepciones, bloques de exámenes y consultorios",
                 assistantCalledTitle: "¡Personal Notificado!",
                 assistantCalledDesc: "Un miembro del personal fue notificado y se dirige al totem #03 para ayudarle."
             }
@@ -352,24 +326,8 @@
         // Init Lifecycle
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            startLiveClock();
             renderSpecialties();
         });
-
-        function startLiveClock() {
-            function update() {
-                const now = new Date();
-                const clockEl = document.getElementById('kiosk-clock');
-                const dateEl = document.getElementById('kiosk-date');
-                if (clockEl) clockEl.innerText = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                if (dateEl) {
-                    const options = { weekday: 'short', day: '2-digit', month: 'short' };
-                    dateEl.innerText = now.toLocaleDateString('pt-BR', options);
-                }
-            }
-            update();
-            setInterval(update, 1000);
-        }
 
         function startWizard() {
             goToStep(1);
@@ -379,6 +337,7 @@
 
         function goToStep(stepNum) {
             state.currentStep = stepNum;
+            document.getElementById('kiosk-main').classList.toggle('wizard-active', stepNum >= 1 && stepNum <= 4);
 
             // Hide all step screens
             document.getElementById('screen-welcome').classList.add('hidden');
@@ -388,25 +347,25 @@
             }
 
             const btnHome = document.getElementById('btn-global-home');
-            const stepperBar = document.getElementById('wizard-stepper');
             const btnBack = document.getElementById('btn-wizard-back');
+            const stepperBar = document.getElementById('wizard-stepper');
 
             if (stepNum === 0) {
                 document.getElementById('screen-welcome').classList.remove('hidden');
                 btnHome.classList.add('hidden');
-                stepperBar.classList.add('hidden');
                 btnBack.classList.add('hidden');
+                stepperBar.classList.add('hidden');
             } else if (stepNum === 5) {
                 document.getElementById('step-5').classList.remove('hidden');
                 btnHome.classList.remove('hidden');
-                stepperBar.classList.add('hidden');
                 btnBack.classList.add('hidden');
+                stepperBar.classList.add('hidden');
                 startFinishCountdown();
             } else {
                 document.getElementById(`step-${stepNum}`).classList.remove('hidden');
                 btnHome.classList.remove('hidden');
-                stepperBar.classList.remove('hidden');
                 btnBack.classList.remove('hidden');
+                stepperBar.classList.remove('hidden');
                 updateStepperProgress(stepNum);
             }
 
@@ -422,26 +381,28 @@
         }
 
         function updateStepperProgress(step) {
-            const progressBar = document.getElementById('stepper-progress-bar');
-            const percentage = ((step - 1) / 3) * 100;
-            if (progressBar) progressBar.style.width = `${percentage}%`;
-
             for (let i = 1; i <= 4; i++) {
                 const node = document.getElementById(`step-node-${i}`);
                 if (!node) continue;
 
-                if (i < step) {
-                    node.className = 'w-12 h-12 rounded-2xl bg-health-500 text-white font-black text-lg flex items-center justify-center shadow-md';
-                    node.innerHTML = '<i data-lucide="check" class="w-6 h-6"></i>';
-                } else if (i === step) {
-                    node.className = 'w-12 h-12 rounded-2xl bg-health-600 text-white font-black text-lg flex items-center justify-center shadow-md ring-4 ring-health-100';
-                    node.innerText = i;
-                } else {
-                    node.className = 'w-12 h-12 rounded-2xl bg-slate-200 text-slate-500 font-black text-lg flex items-center justify-center';
-                    node.innerText = i;
-                }
+                node.classList.toggle('is-complete', i < step);
+                node.classList.toggle('is-current', i === step);
+                node.classList.toggle('is-upcoming', i > step);
+                if (i === step) node.setAttribute('aria-current', 'step');
+                else node.removeAttribute('aria-current');
             }
-            lucide.createIcons();
+
+            for (let i = 1; i <= 3; i++) {
+                const connector = document.getElementById(`step-connector-${i}`);
+                connector.classList.toggle('is-complete', step > i);
+            }
+        }
+
+        function toggleUtilityPanel() {
+            const panel = document.getElementById('utility-panel');
+            const toggle = document.getElementById('utility-toggle');
+            const isOpen = panel.classList.toggle('hidden') === false;
+            toggle.setAttribute('aria-expanded', String(isOpen));
         }
 
         function switchIdMethod(method) {
@@ -638,15 +599,6 @@
             goToStep(0);
         }
 
-        // Sector Map & Assistant Modals
-        function openSectorMapModal() {
-            document.getElementById('modal-sector-map').classList.remove('hidden');
-            playAudioTone(700, 0.1);
-        }
-        function closeSectorMapModal() {
-            document.getElementById('modal-sector-map').classList.add('hidden');
-        }
-
         function callHumanAssistant() {
             document.getElementById('modal-call-assistant').classList.remove('hidden');
             playAudioTone(900, 0.2);
@@ -660,25 +612,6 @@
             state.isHighContrast = !state.isHighContrast;
             document.getElementById('kiosk-body').classList.toggle('high-contrast', state.isHighContrast);
             playAudioTone(500, 0.1);
-        }
-
-        function changeFontSize(action) {
-            const body = document.getElementById('kiosk-body');
-            body.classList.remove('scale-sm', 'scale-lg', 'scale-xl');
-
-            if (action === 'plus') {
-                state.fontScaleState = Math.min(3, state.fontScaleState + 1);
-            } else if (action === 'minus') {
-                state.fontScaleState = Math.max(0, state.fontScaleState - 1);
-            } else {
-                state.fontScaleState = 1;
-            }
-
-            if (state.fontScaleState === 0) body.classList.add('scale-sm');
-            if (state.fontScaleState === 2) body.classList.add('scale-lg');
-            if (state.fontScaleState === 3) body.classList.add('scale-xl');
-
-            playAudioTone(600, 0.05);
         }
 
         function toggleVoiceAssistant() {
@@ -709,9 +642,9 @@
             ['pt', 'en', 'es'].forEach(l => {
                 const btn = document.getElementById(`lang-${l}`);
                 if (l === lang) {
-                    btn.className = "px-2 py-0.5 rounded font-extrabold bg-health-500 text-white transition-all";
+                    btn.className = "rounded-lg bg-health-600 px-2 py-1.5 text-xs font-extrabold text-white";
                 } else {
-                    btn.className = "px-2 py-0.5 rounded font-bold hover:bg-white/20 transition-all text-slate-200";
+                    btn.className = "rounded-lg bg-slate-100 px-2 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-200";
                 }
             });
 
